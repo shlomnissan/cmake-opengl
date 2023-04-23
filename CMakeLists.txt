@@ -1,14 +1,16 @@
 cmake_minimum_required(VERSION 3.25)
-project(cmake_opengl_app)
+project(cmake_opengl)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(BUILD_GLFW "Fetch and build GLFW from source" ON)
+option(BUILD_GLFW "Fetch GLFW and build from source" ON)
 
+# Find OpenGL binding library
 find_package(OpenGL REQUIRED)
 
+# Build GLFW from source
 if (BUILD_GLFW)
     include(FetchContent)
     FetchContent_Declare(
@@ -29,6 +31,5 @@ if (BUILD_GLFW)
     endif()
 endif()
 
-add_executable(cmake_opengl_app main.cpp)
-
-target_link_libraries(cmake_opengl_app glfw OpenGL::GL)
+add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glad)
+add_subdirectory(src)
