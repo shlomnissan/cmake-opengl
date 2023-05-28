@@ -3,9 +3,13 @@
 
 #include <iostream>
 #include <memory>
+#include <array>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include <shaders/include/vertex.h>
+#include <shaders/include/fragment.h>
 
 struct glfw_window_deleter {
     void operator()(GLFWwindow* window) const {
@@ -29,9 +33,10 @@ auto main() -> int {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    // configure window
+
     constexpr int width = 800;
     constexpr int height = 600;
-
     GLFWwindow_ptr window {
         glfwCreateWindow(width, height, "OpenGL window", nullptr, nullptr)
     };
@@ -51,9 +56,51 @@ auto main() -> int {
 
     glViewport(0, 0, width, height);
 
+    // build and compiler a shader program
+
+    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shader, 1, &_SHADER_vertex, nullptr);
+    glCompileShader(vertex_shader);
+
+    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &_SHADER_fragment, nullptr);
+    glCompileShader(fragment_shader);
+
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vertex_shader);
+    glAttachShader(program, fragment_shader);
+    glLinkProgram(program);
+
+    glDeleteShader(vertex_shader);
+    glDeleteShader(fragment_shader);
+
+    // set up vertex data and attributes
+
+    GLuint VAO = 0;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    std::array<GLfloat, 9> vertices {
+        -0.5f, -0.5f, 0.0f, // left  
+         0.5f, -0.5f, 0.0f, // right 
+         0.0f,  0.5f, 0.0f  // top
+    };
+    
+    GLuint VBO = 0;
+    glGenBuffers(1, &VBO);    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     while(!glfwWindowShouldClose(window.get())) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(program);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window.get());
         glfwPollEvents();    
