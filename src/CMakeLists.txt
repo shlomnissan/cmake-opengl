@@ -7,7 +7,7 @@ file(GLOB SHADERS "shaders/*.glsl")
 foreach(SHADER IN LISTS SHADERS)
     get_filename_component(FILENAME ${SHADER} NAME)
     string(REGEX REPLACE "\\.[^.]*$" "" FILENAME_NO_EXT ${FILENAME})
-    set(HEADER_FILE shaders/include/${FILENAME_NO_EXT}.h)
+    set(HEADER_FILE shaders/${FILENAME_NO_EXT}.h)
 
     file(READ ${SHADER} CONTENTS)
     file(WRITE ${HEADER_FILE} "static const char* _SHADER_${FILENAME_NO_EXT} = R\"(")

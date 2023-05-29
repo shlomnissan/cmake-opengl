@@ -8,8 +8,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <shaders/include/vertex.h>
-#include <shaders/include/fragment.h>
+#include <shaders/vertex.h>
+#include <shaders/fragment.h>
 
 struct glfw_window_deleter {
     void operator()(GLFWwindow* window) const {
@@ -56,7 +56,7 @@ auto main() -> int {
 
     glViewport(0, 0, width, height);
 
-    // build and compiler a shader program
+    // build and compile a shader program
 
     GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &_SHADER_vertex, nullptr);

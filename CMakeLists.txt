@@ -7,10 +7,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(BUILD_GLFW "Fetch GLFW and build from source" ON)
 
-# Find OpenGL binding library
+# Find the OpenGL binding library
 find_package(OpenGL REQUIRED)
 
-# Build GLFW from source
+# Fetch GLFW and build it from source
 if (BUILD_GLFW)
     include(FetchContent)
     FetchContent_Declare(
@@ -31,5 +31,5 @@ if (BUILD_GLFW)
     endif()
 endif()
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glad)
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/glad)
 add_subdirectory(src)
